@@ -2,7 +2,7 @@
   <div class="hello">
    <GmapMap
   :center="center"
-  :zoom="15"
+  :zoom="zoom"
   map-type-id="roadmap"
   style="width: 100%; min-height: 100vh"
 >
@@ -15,7 +15,10 @@
           ></gmap-marker>
       </gmap-cluster>
 
-</GmapMap>
+      </GmapMap>
+      <div class="geolocation" >
+      <img id="geo"  @click="geolocation" src="https://image.flaticon.com/icons/png/512/60/60834.png" />
+    </div>
   </div>
 </template>
 
@@ -31,6 +34,7 @@ export default {
             lat: -0.187670,
             lng: -78.485172
           },
+          zoom: 15,
           markers: [{
             position: {
               lat: -0.201271,
@@ -43,9 +47,31 @@ export default {
             }
           }]
         }
+  },
+  methods:{
+    geolocation() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        this.zoom = 19
+      });
+    }
   }
   
 }
     
 </script>
+<style>
+#geo{
+  z-index: 10;
+  background: white;
+  border-radius: 100%;
+  position: absolute;
+  top: 0;
+  width: 50px
+}
+</style>
+
 
