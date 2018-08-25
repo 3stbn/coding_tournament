@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <app-map msg="Delktium"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import appMap from './components/app-map.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    appMap
   }
 }
 </script>
