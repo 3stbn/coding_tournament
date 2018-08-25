@@ -1,20 +1,20 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
    <GmapMap
-  :center="{lat:10, lng:10}"
-  :zoom="7"
-  map-type-id="terrain"
-  style="width: 500px; height: 300px"
+  :center="center"
+  :zoom="15"
+  map-type-id="roadmap"
+  style="width: 100%; min-height: 100vh"
 >
-  <GmapMarker
-    :key="index"
-    v-for="(m, index) in markers"
-    :position="m.position"
-    :clickable="true"
-    :draggable="true"
-    @click="center=m.position"
-  />
+  <gmap-cluster>
+        <gmap-marker v-for="(m, index) in markers"
+          :position="m.position"
+          :clickable="true" :draggable="true"
+          @click="center=m.position"
+          :key="index"
+          ></gmap-marker>
+      </gmap-cluster>
+
 </GmapMap>
   </div>
 </template>
@@ -24,9 +24,28 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data(){
+    return {
+          center: {
+            lat: -0.187670,
+            lng: -78.485172
+          },
+          markers: [{
+            position: {
+              lat: -0.201271,
+              lng: -78.494922
+            }
+          }, {
+            position: {
+              lat: -0.197752,
+              lng: -78.497508
+            }
+          }]
+        }
   }
+  
 }
+    
 </script>
 
-
-</style>

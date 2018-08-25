@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import GmapCluster from 'vue2-google-maps/dist/components/cluster'
+
+
 
 Vue.config.productionTip = false
 
-new Vue({
-  render: h => h(App)
-}).$mount('#app')
+Vue.component('GmapCluster', GmapCluster)
 
 
 Vue.use(VueGoogleMaps, {
@@ -33,3 +34,7 @@ Vue.use(VueGoogleMaps, {
   //// then disable the following:
   // installComponents: true,
 })
+
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
