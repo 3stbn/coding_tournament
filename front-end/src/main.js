@@ -2,6 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import GmapCluster from 'vue2-google-maps/dist/components/cluster'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+ 
+Vue.use(VueAxios, axios)
 
 
 
