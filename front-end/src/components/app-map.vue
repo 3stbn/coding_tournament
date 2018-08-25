@@ -7,10 +7,10 @@
   style="width: 100%; min-height: 100vh"
 >
   <gmap-cluster>
-        <gmap-marker v-for="(m, index) in markers"
-          :position="m.position"
+        <gmap-marker v-for="(e, index) in events"
+          :position="e.lugar"
           :clickable="true" :draggable="true"
-          @click="toggleInfoWindow(m,index)"
+          @click="toggleInfoWindow(e,index)"
           :key="index"
           ></gmap-marker>
       <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
@@ -21,15 +21,70 @@
           :position = "geoMarker.position"
            :clickable="true" :draggable="true"
            @click="newInfoEvent()"
-           v-show="status='new'"
-      >
+           v-show="status='new'"      >
       </gmap-marker>
 
       </GmapMap>
       <div class="geolocation" >
-      <img id="geo" @click="geolocation" src="https://image.flaticon.com/icons/png/512/60/60834.png" />
+      <button @click="geolocation" id="geo" class="button is-primary">Nuevo evento </button>
     </div>
-    <app-newEvent v-show="isShown" @close="isShown = false" :location="this.geoMarker"></app-newEvent>
+    <!-- Nuevo evento -->
+      <div class="modal is-active" v-show="isShown">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Nuevo Evento</p>
+            
+            <button class="delete" aria-label="close" @click="isShown=false"></button>
+          </header>
+          <section class="modal-card-body">
+            <p class="modal-card-title">El evento se guardará en tu ubicación actual</p>
+            <br><br>
+              <div class="columns">
+                <div class="column">
+                <div class="control">
+                  <label > Tipo de Evento</label>
+                          <div class="select">
+                              
+                              <select v-model="form.tipo">
+              
+                              <option value="asalto">Asalto</option>
+                              <option value="robo">Robo</option>
+                              <option value="vandalismo">Vandalismo</option>
+                              </select>
+                          </div>
+                  </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                  <label class="label">Descripción</label>
+                  <div class="control">
+                      <input class="input" type="text" placeholder="Descripcion breve" v-model="form.descripcion">
+                  </div>
+              </div>
+                </div>
+                
+              </div>
+              
+              <div class="columns">
+    
+               <div class="column">
+                  <label > Fecha</label>
+                  <input class="input" type="date" v-model="form.fecha">
+                  </div>
+                  <div class="column">
+                  <label >Hora</label>
+                  <input class="input" type="time" v-model="form.hora">
+                  </div>         
+                                
+              </div>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-primary" @click="newEvent">Guardar</button>
+            <button class="button" @click="isShown=false">Cancelar</button>
+          </footer>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -40,11 +95,22 @@ export default {
   components:{
       appNewEvent
   },
+  created(){
+    this.fetchEvent();
+  },
   name: 'app-map',
   data(){
     return {
-      isShown: true,
+      isShown: false,
       status: 'inicial',
+      events: [],
+      form: {
+        tipo: '',
+        descripcion: '',
+        hora: '',
+        fecha: '',
+        lugar: ''
+      },
           center: {
             lat: -0.187670,
             lng: -78.485172
@@ -90,6 +156,7 @@ export default {
           lng: position.coords.longitude
         };
         this.zoom = 19
+        
         this.newGeoMarker(position.coords.latitude, position.coords.longitude )
       });
     },
@@ -98,11 +165,13 @@ export default {
           lat: latitude,
           lng: longitude        
       }
-      this.status = 'nuew';
+      this.isShown = true;
+      this.form.lugar = this.geoMarker.position;
+      this.status = 'new';
     },
-    toggleInfoWindow (marker, idx) {
-            this.infoWindowPos = marker.position;
-            this.infoContent = marker.infoText;
+    toggleInfoWindow (event, idx) {
+            this.infoWindowPos = event.lugar;
+            this.infoContent = event.tipo + ' ' + event.fecha + '\n' + event.descripcion ;
             //check if its the same marker that was selected if yes toggle
             if (this.currentMidx == idx) {
               this.infoWinOpen = !this.infoWinOpen;
@@ -112,11 +181,33 @@ export default {
               this.infoWinOpen = true;
               this.currentMidx = idx;
             }
-          }
-    },
-    newInfoEvent(){
+          },
 
+          fetchEvent(){      
+                  fetch('http://localhost:1337/events')
+                    .then(res => res.json())
+                    .then(res => {
+                        this.events = res;
+                    })
+    },
+    newEvent(){
+                  fetch('http://localhost:1337/events', {
+                    method: 'post',
+                    body: JSON.stringify(this.form),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.isShown = false
+                        alert('Evento añadido');
+                        this.fetchEvent();
+                    })
+                    .catch(err => console.log(err));
     }
+    }
+    
   
 }
     
@@ -124,17 +215,20 @@ export default {
 <style>
 #geo{
   z-index: 10;
-  background: white;
-  border-radius: 100%;
   position: absolute;
   top: 2%;
   left: 26%;
-  width: 50px
 }
 #newEvent{
   z-index: 20;
 }
-
+.modal-background {
+  background: rgba(10, 10, 10, 0.21);
+  left: 10%;
+}
+.modal-card{
+  width: 340px;
+}
 </style>
 
 

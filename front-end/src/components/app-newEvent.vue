@@ -69,9 +69,6 @@ export default {
   props: {
     location: Object
   },
-  created() {
-      bringLocation()
-  },
   data(){
       return{
           lugar: {},
@@ -88,10 +85,6 @@ export default {
             })
       }
   },
-  computed: {
-      bringLocation() {
-          this.location = this.lugar
-      }
-  }
+
 }
 </script>
