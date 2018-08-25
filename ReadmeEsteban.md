@@ -40,5 +40,6 @@ Technologies
 
 *Reporte de evento en base a geolocalización
 *Clusters agrupados en base al zoom
-*Feed de eventos 
+*Feed de eventos
+*Api para eventos 
 
