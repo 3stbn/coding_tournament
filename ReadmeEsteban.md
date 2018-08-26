@@ -1,5 +1,4 @@
 Nombre: Esteban Torres
-CI: 1718413824
 email: esteban93torres@gmail.com
 
 #Instrucciones de instalacion
